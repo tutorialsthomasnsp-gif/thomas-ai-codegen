@@ -1,1 +1,7 @@
+{
+  "name": "Code Generator Agent",
+  "steps": [
+    {"type": "ai", "instruction": "Generate COMPLETE runnable code for: {{prompt}}. Language/framework auto‑detected. Include imports, error handling, comments. Output ONLY code + 2‑line explanation."}
+  ]
+}
 
