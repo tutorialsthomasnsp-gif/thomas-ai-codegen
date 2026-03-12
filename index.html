@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TAT Infinity Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #050816;
+      --card: #0b1020;
+      --accent: #6c5ce7;
+      --accent-soft: #a29bff;
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2933, #020617);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 12px;
+    }
+    .app {
+      width: 100%;
+      max-width: 960px;
+      background: linear-gradient(135deg, rgba(148,163,184,0.06), rgba(15,23,42,0.98));
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 24px 80px rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.3);
+      backdrop-filter: blur(12px);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .title-block h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      letter-spacing: 0.04em;
+    }
+    .title-block p {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: rgba(52,211,153,0.12);
+      color: #6ee7b7;
+      border: 1px solid rgba(52,211,153,0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+      font-weight: 500;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      box-shadow: 0 10px 25px rgba(79,70,229,0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(79,70,229,0.55);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent-soft);
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+    .btn-secondary:hover {
+      background: rgba(15,23,42,0.8);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+    @media (max-width: 800px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .panel {
+      background: radial-gradient(circle at top left, rgba(148,163,184,0.14), rgba(15,23,42,0.98));
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid rgba(148,163,184,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .panel h2 {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+    .panel small {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 10px 12px;
+      background: rgba(15,23,42,0.92);
+      color: var(--text);
+      font-family: "JetBrains Mono", "Fira Code", monospace;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    textarea::placeholder {
+      color: rgba(148,163,184,0.8);
+    }
+    .helper-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.35);
+      font-size: 0.7rem;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .chip:hover {
+      border-color: var(--accent-soft);
+      color: var(--accent-soft);
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: "JetBrains Mono", "Fira Code", monospace;
+      font-size: 0.8rem;
+      background: rgba(15,23,42,0.92);
+      border-radius: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(148,163,184,0.4);
+      max-height: 340px;
+      overflow: auto;
+      color: #e5e7eb;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: rgba(15,23,42,0.85);
+      color: var(--muted);
+    }
+    .pill .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .status-row span.strong {
+      color: var(--success);
+      font-weight: 500;
+    }
+    .status-error {
+      color: var(--danger);
+    }
+    footer {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    a {
+      color: var(--accent-soft);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title-block">
+        <h1>TAT Infinity Studio</h1>
+        <p>Your personal AI studio for code, writing, ideas, and experiments.</p>
+      </div>
+      <div class="controls">
+        <div class="badge">
+          <span></span>
+          Live · Groq Llama 3.3
+        </div>
+        <button class="btn-secondary" type="button" onclick="setExample('code')">
+          Code example
+        </button>
+        <button class="btn-secondary" type="button" onclick="setExample('chat')">
+          Chat example
+        </button>
+        <button class="btn-primary" type="button" onclick="runStudio()">
+          ▶ Run with AI
+        </button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="panel">
+        <h2>Prompt</h2>
+        <small>Describe anything. TAT decides if it should write code or just chat.</small>
+        <textarea id="prompt" placeholder="Try things like:
+- Build a responsive landing page for my portfolio in HTML, CSS and a bit of JavaScript.
+- Explain compound interest in very simple language with one numeric example.
+- Write a Python script that renames all .txt files in a folder.
+- Help me brainstorm 5 YouTube video ideas for programming beginners."></textarea>
+        <div class="helper-row">
+          <div class="chips">
+            <div class="chip" onclick="insertSnippet('Create a modern single-page portfolio website in HTML, CSS and JavaScript with a hero section, projects grid and contact form.')">
+              Web app UI
+            </div>
+            <div class="chip" onclick="insertSnippet('Write a Python script that reads a CSV file of expenses and prints total spent per category.')">
+              Python utility
+            </div>
+            <div class="chip" onclick="insertSnippet('Explain how neural networks work using a very simple real-life analogy for someone new to AI.')">
+              AI explanation
+            </div>
+            <div class="chip" onclick="insertSnippet('Suggest a weekly study and work schedule for a freelance developer who also runs a tuition centre.')">
+              Productivity plan
+            </div>
+          </div>
+          <span id="charCount">0 chars</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Result</h2>
+        <small>
+          TAT returns either <span class="pill"><span class="dot"></span> code</span>
+          or <span class="pill">chat answer</span>.
+        </small>
+        <pre id="output">TAT Infinity Studio is waiting for your prompt…</pre>
+        <div class="status-row">
+          <div>
+            <span>Mode:</span>
+            <span id="modeLabel" class="strong">detecting…</span>
+          </div>
+          <div id="statusText">Idle</div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div>
+        5–10 free runs/day on Groq test tier. Upgrade rules coming later.
+      </div>
+      <div>
+        Created by Tonal Abraham Thomas · Backend: Cloudflare Worker & Groq
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // ===== CONFIG (fixed workflow URL) =====
+    const WORKER_URL = "https://plain-dawn-6f50.tonalaiagent.workers.dev";
+    const WORKFLOW_URL = "https://raw.githubusercontent.com/tutorialsthomasnsp-gif/thomas-ai-codegen/main/codegen.json";
+
+    const promptEl = document.getElementById("prompt");
+    const outputEl = document.getElementById("output");
+    const charCountEl = document.getElementById("charCount");
+    const modeLabelEl = document.getElementById("modeLabel");
+    const statusTextEl = document.getElementById("statusText");
+
+    promptEl.addEventListener("input", () => {
+      charCountEl.textContent = promptEl.value.length + " chars";
+    });
+
+    function insertSnippet(text) {
+      promptEl.value = text;
+      charCountEl.textContent = promptEl.value.length + " chars";
+      promptEl.focus();
+    }
+
+    function setExample(kind) {
+      if (kind === "code") {
+        insertSnippet(
+          "Create a sleek dark-themed dashboard layout using HTML, CSS and vanilla JavaScript with a sidebar, top bar and content cards."
+        );
+      } else {
+        insertSnippet(
+          "Give me a friendly, simple explanation of how large language models like ChatGPT or Perplexity work, using analogies."
+        );
+      }
+    }
+
+    async function runStudio() {
+      const prompt = promptEl.value.trim();
+      if (!prompt) {
+        alert("Please type a prompt first.");
+        return;
+      }
+
+      modeLabelEl.textContent = "deciding…";
+      statusTextEl.textContent = "Calling Cloudflare Worker + Groq…";
+      outputEl.textContent = "Thinking with TAT Infinity Studio…";
+
+      try {
+        const url = WORKER_URL
+          + "?workflow=" + encodeURIComponent(WORKFLOW_URL)
+          + "&prompt=" + encodeURIComponent(prompt);
+
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status + " – check Worker URL/workflow.");
+        }
+
+        const data = await res.json();
+
+        // Expected from TAT Infinity Studio JSON:
+        // { "type": "code" | "chat", "language": "...", "content": "..." }
+        const type = (data.type || "").toLowerCase();
+        const language = data.language || "";
+        const content = data.content || JSON.stringify(data, null, 2);
+
+        if (type === "code") {
+          modeLabelEl.textContent = "CODE" + (language ? " · " + language : "");
+        } else if (type === "chat") {
+          modeLabelEl.textContent = "CHAT · explanation";
+        } else {
+          modeLabelEl.textContent = "UNKNOWN · raw JSON";
+        }
+
+        outputEl.textContent = content;
+        statusTextEl.textContent = "Done";
+
+      } catch (err) {
+        console.error(err);
+        statusTextEl.textContent = "Error";
+        outputEl.textContent = "Error: " + err.message
+          + "\n\nCheck:\n1) WORKER_URL is correct\n2) WORKFLOW_URL is correct\n3) Cloudflare Worker is deployed.";
+        modeLabelEl.textContent = "error";
+      }
+    }
+  </script>
+</body>
+</html>
