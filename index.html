@@ -360,7 +360,7 @@
 </head>
 <body>
   <div class="app-shell">
-    <header>
+        <header>
       <div class="brand">
         <div class="logo-pill">T</div>
         <div class="brand-title">
@@ -370,9 +370,9 @@
       </div>
       <div class="header-status">
         <div class="status-pill"><span></span> Live · Groq Llama 3.3</div>
-        <a class="header-link" href="https://github.com/tutorialsthomasnsp-gif/thomas-ai-codegen" target="_blank" rel="noopener">
-          View project on GitHub
-        </a>
+        <button id="newChatBtn" class="header-link" type="button">
+          New chat
+        </button>
       </div>
     </header>
 
@@ -417,10 +417,13 @@
       </div>
     </main>
 
-    <footer>
+        <footer>
       5–10 free runs/day on Groq test tier. Upgrade rules coming later.
       <br>
-      Created by Tonal Abraham Thomas · Backend: Cloudflare Worker &amp; Groq.
+      Created by Tonal Abraham Thomas · Backend: Cloudflare Worker &amp; Groq ·
+      <a href="https://github.com/tutorialsthomasnsp-gif/thomas-ai-codegen" target="_blank" rel="noopener">
+        Project on GitHub
+      </a>
     </footer>
   </div>
 
@@ -435,6 +438,7 @@
     const promptEl = document.getElementById("prompt");
     const sendBtn = document.getElementById("sendBtn");
     const charCountEl = document.getElementById("charCount");
+    const newChatBtn = document.getElementById("newChatBtn");
 
     let isSending = false;
     const messages = []; // {role: 'user'|'assistant', content, type?, language?}
@@ -453,10 +457,32 @@
 
     sendBtn.addEventListener("click", sendFromUI);
 
-    function autoResizeTextarea() {
-      promptEl.style.height = "auto";
-      promptEl.style.height = Math.min(promptEl.scrollHeight, 80) + "px";
-    }
+if (newChatBtn) {
+  newChatBtn.addEventListener("click", () => {
+    messages.length = 0;
+    chatEl.innerHTML = "";
+    const hint = document.createElement("div");
+    hint.id = "chat-empty";
+    hint.className = "chat-empty-hint";
+    hint.innerHTML = `
+      Start by asking anything – for example:
+      <br><br>
+      “Create a responsive landing page for my tuition centre,<br>
+      explain compound interest simply, or generate a Python script
+      to rename files.”
+    `;
+    chatEl.appendChild(hint);
+    typingEl.style.display = "none";
+    promptEl.value = "";
+    charCountEl.textContent = "0 chars";
+    autoResizeTextarea();
+  });
+}
+
+function autoResizeTextarea() {
+  promptEl.style.height = "auto";
+  promptEl.style.height = Math.min(promptEl.scrollHeight, 80) + "px";
+}
 
     function fillExample(text) {
       promptEl.value = text;
