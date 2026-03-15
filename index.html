@@ -580,54 +580,70 @@ function autoResizeTextarea() {
     }
 
     async function sendFromUI() {
-      const prompt = promptEl.value.trim();
-      if (!prompt || isSending) return;
+  const prompt = promptEl.value.trim();
+  if (!prompt || isSending) return;
 
-      appendMessage("user", prompt);
-      promptEl.value = "";
-      charCountEl.textContent = "0 chars";
-      autoResizeTextarea();
+  appendMessage("user", prompt);
+  promptEl.value = "";
+  charCountEl.textContent = "0 chars";
+  autoResizeTextarea();
 
-      await callWorker(prompt);
+  await callWorker(prompt); // pass this prompt
+}
+
+    async function callWorker(latestUserPrompt) {
+  if (!WORKFLOW_URL) {
+    alert("Workflow URL missing in config.");
+    return;
+  }
+  isSending = true;
+  sendBtn.disabled = true;
+  typingEl.style.display = "block";
+
+  try {
+    // Build conversation context (last 6 messages: 3 user + 3 assistant)
+    const recent = [];
+    const maxMessages = 6;
+    for (let i = Math.max(0, messages.length - maxMessages); i < messages.length; i++) {
+      const m = messages[i];
+      recent.push((m.role === "user" ? "User" : "Assistant") + ": " + m.content);
     }
+    recent.push("User: " + latestUserPrompt);
 
-    async function callWorker(prompt) {
-      if (!WORKFLOW_URL) {
-        alert("Workflow URL missing in config.");
-        return;
-      }
-      isSending = true;
-      sendBtn.disabled = true;
-      typingEl.style.display = "block";
+    const conversationPrompt =
+      "You are TAT Infinity Studio chatting with a user. " +
+      "Use the previous conversation for context when replying.\n\n" +
+      "Conversation so far:\n" +
+      recent.join("\n") +
+      "\n\nReply as the assistant to the LAST user message only.";
 
-      try {
-        const url = WORKER_URL
-          + "?workflow=" + encodeURIComponent(WORKFLOW_URL)
-          + "&prompt=" + encodeURIComponent(prompt);
+    const url = WORKER_URL
+      + "?workflow=" + encodeURIComponent(WORKFLOW_URL)
+      + "&prompt=" + encodeURIComponent(conversationPrompt);
 
-        const res = await fetch(url);
-        if (!res.ok) {
-          const text = await res.text();
-          appendMessage("assistant",
-            "Error from backend (" + res.status + "): " + text,
-            { type: "chat" }
-          );
-        } else {
-          const data = await res.json();
-          const type = (data.type || "").toLowerCase();
-          const language = data.language || "";
-          const content = data.content || JSON.stringify(data, null, 2);
+    const res = await fetch(url);
+    if (!res.ok) {
+      const text = await res.text();
+      appendMessage("assistant",
+        "Error from backend (" + res.status + "): " + text,
+        { type: "chat" }
+      );
+    } else {
+      const data = await res.json();
+      const type = (data.type || "").toLowerCase();
+      const language = data.language || "";
+      const content = data.content || JSON.stringify(data, null, 2);
 
-          appendMessage("assistant", content, { type, language });
-        }
-      } catch (err) {
-        appendMessage("assistant", "Network error: " + err.message, { type: "chat" });
-      } finally {
-        isSending = false;
-        sendBtn.disabled = false;
-        typingEl.style.display = "none";
-      }
+      appendMessage("assistant", content, { type, language });
     }
+  } catch (err) {
+    appendMessage("assistant", "Network error: " + err.message, { type: "chat" });
+  } finally {
+    isSending = false;
+    sendBtn.disabled = false;
+    typingEl.style.display = "none";
+  }
+}
   </script>
 </body>
 </html>
