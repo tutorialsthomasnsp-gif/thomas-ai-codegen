@@ -1,0 +1,23 @@
+[
+  {
+    "id": "bible-faith-1",
+    "title": "Faith and Trust",
+    "tags": ["bible", "faith", "encouragement"],
+    "text": "Now faith is the assurance of things hoped for, the conviction of things not seen.",
+    "source": "Hebrews 11:1"
+  },
+  {
+    "id": "tuition-math-ci-1",
+    "title": "Simple Explanation of Compound Interest",
+    "tags": ["tuition", "math", "compound interest"],
+    "text": "Compound interest is interest on both the initial principal and the accumulated interest from previous periods.",
+    "source": "Thomas Tutorials notes"
+  },
+  {
+    "id": "coding-python-rename",
+    "title": "Python script to rename files",
+    "tags": ["code", "python", "files"],
+    "text": "Use the os and pathlib modules to loop over files and rename them based on a pattern.",
+    "source": "Thomas Tutorials code tips"
+  }
+]
